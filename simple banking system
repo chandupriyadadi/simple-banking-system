@@ -1,0 +1,84 @@
+import datetime
+
+class Account:
+    def __init__(self, account_number, account_holder_name, initial_balance=0):
+        self.account_number = account_number
+        self.account_holder_name = account_holder_name
+        self.balance = initial_balance
+        self.transaction_history = []
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            self.transaction_history.append(
+                (datetime.datetime.now(), "Deposit", amount)
+            )
+            print(f"Deposited ${amount:.2f}. New balance: ${self.balance:.2f}")
+        else:
+            print("Invalid deposit amount.")
+
+    def withdraw(self, amount):
+        if 0 < amount <= self.balance:
+            self.balance -= amount
+            self.transaction_history.append(
+                (datetime.datetime.now(), "Withdrawal", amount)
+            )
+            print(f"Withdrew ${amount:.2f}. New balance: ${self.balance:.2f}")
+        else:
+            print("Insufficient funds or invalid withdrawal amount.")
+
+    def check_balance(self):
+        print(f"Account balance for {self.account_holder_name}: ${self.balance:.2f}")
+
+    def transaction_log(self):
+      print("Transaction History:")
+      for date, transaction_type, amount in self.transaction_history:
+        print(f"{date}: {transaction_type} - ${amount:.2f}")
+
+
+def main():
+    accounts = {}
+
+    while True:
+        print("\nBanking System Menu:")
+        print("1. Create Account")
+        print("2. Deposit")
+        print("3. Withdraw")
+        print("4. Check Balance")
+        print("5. Transaction History")
+
+        choice = input("Enter your choice (1-6): ")
+
+        if choice == "1":
+            account_number = input("Enter account number: ")
+            account_holder_name = input("Enter account holder name: ")
+            if account_number not in accounts:
+                accounts[account_number] = Account(
+                    account_number, account_holder_name
+                )
+                print(f"Account created successfully for {account_holder_name}.")
+            else:
+                print("Account number already exists.")
+
+        elif choice in ["2", "3", "4", "5"]:
+            account_number = input("Enter your account number: ")
+            if account_number in accounts:
+                account = accounts[account_number]
+                if choice == "2":
+                    amount = float(input("Enter deposit amount: "))
+                    account.deposit(amount)
+                elif choice == "3":
+                    amount = float(input("Enter withdrawal amount: "))
+                    account.withdraw(amount)
+                elif choice == "4":
+                    account.check_balance()
+                elif choice == "5":
+                    account.transaction_log()
+            else:
+                print("Account not found.")
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
